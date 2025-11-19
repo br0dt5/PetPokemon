@@ -26,12 +26,38 @@ async Task ShowPokemonAsync(int id)
     try
     {
         var request = new RestRequest($"/api/v2/pokemon/{id}/", Method.Get);
-        var response = await client.GetAsync<Pokemon>(request);
-        if (response is not null)
+        var pokemon = await client.GetAsync<Pokemon>(request);
+        if (pokemon is not null)
         {
             Console.WriteLine();
-            Console.WriteLine($"ID: {response.Id}");
-            Console.WriteLine($"Nome: {response.Name}");
+            Console.WriteLine($"Nome: {pokemon.Name}");
+            Console.WriteLine($"Peso: {pokemon.Weight}");
+            Console.WriteLine($"Altura: {pokemon.Height}");
+
+            // Tipos (mostrando em ordem de slot)
+            if (pokemon.Types is { Length: > 0 })
+            {
+                var ordered = pokemon.Types.OrderBy(t => t.Slot).Select(t => t.Type.Name);
+                Console.WriteLine($"Tipos: {string.Join(", ", ordered)}");
+            }
+            else
+            {
+                Console.WriteLine("Tipos: —");
+            }
+
+            // Habilidades (mostrando se é hidden)
+            if (pokemon.Abilities is { Length: > 0 })
+            {
+                var abilities = pokemon.Abilities
+                    .OrderBy(a => a.Slot)
+                    .Select(a => a.IsHidden ? $"{a.Ability.Name} (hidden)" : a.Ability.Name);
+                Console.WriteLine($"Habilidades: {string.Join(", ", abilities)}");
+            }
+            else
+            {
+                Console.WriteLine("Habilidades: —");
+            }
+
             Console.WriteLine();
         }
         else
