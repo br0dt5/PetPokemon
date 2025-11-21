@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PetPokemon
+namespace PetPokemon.Model
 {
     public record Pokemon(
         [property: JsonPropertyName("id")] int Id,
