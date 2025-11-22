@@ -8,27 +8,54 @@ namespace PetPokemon.Controller
     {
         private readonly RestClient _client;
         private const string BaseUrl = "https://pokeapi.co";
+        private bool _isAdopting = false;
+        private bool _closeApp = false;
 
         public MainController()
         {
             _client = HandleApiConnection();
         }
 
-        public async Task StartGame()
+        public async Task Start()
+        {
+            await HandleUI();
+        }
+
+        async Task HandleUI()
         {
             Menu.ShowBanner();
-            var username = Menu.GetUserName();
+            var username = Menu.GetUserName() ?? "usuário(a)";
             Menu.GreetUser(username);
 
             while (true)
             {
-                Menu.ShowMenu();
-                var opt = Menu.GetMenuChoice();
+                await HandleAdoptionMenu(username);
 
-                if (opt == 0)
+                if (_isAdopting)
+                {
+                    var pet = StartAdoption();
+                    HandlePetActionsMenu(pet);
+                }
+
+                if (_closeApp)
                 {
                     Menu.FarewellUser(username);
                     break;
+                }
+            }
+        }
+
+        async Task HandleAdoptionMenu(string username)
+        {
+            while (true)
+            {
+                Menu.ShowAdoptionMenu();
+                var opt = Menu.GetMenuChoice(0, 3);
+
+                if (opt == 0)
+                {
+                    _closeApp = true;
+                    return;
                 }
 
                 var id = MapChoiceToId(opt);
@@ -37,6 +64,7 @@ namespace PetPokemon.Controller
 
                 if (pokemon is null)
                 {
+                    Menu.ShowPokemonNotFoundError();
                     continue;
                 }
 
@@ -45,13 +73,42 @@ namespace PetPokemon.Controller
                 var confirmation = Menu.GetAdoptionConfirmation();
                 if (confirmation)
                 {
+                    _isAdopting = true;
                     Menu.ConfirmAdoption(username, pokemon.Name);
-                    Menu.FarewellUser(username);
-                    break;
+                    return;
                 }
             }
-
         }
+
+        static Pet StartAdoption() => new Pet();
+
+        void HandlePetActionsMenu(Pet pet)
+        {
+            while (true)
+            {
+                Menu.ShowPetActionsMenu();
+                var opt = Menu.GetMenuChoice(0, 4);
+
+                if (opt == 0)
+                {
+                    _closeApp = true;
+                    return;
+                }
+
+                switch (opt)
+                {
+                    case 1:
+                        pet.Play(); break;
+                    case 2:
+                        pet.Feed(); break;
+                    case 3:
+                        pet.Sleep(); break;
+                    case 4:
+                        pet.ShowStatus(); break;
+                }
+            }
+        }
+
 
         static RestClient HandleApiConnection()
         {

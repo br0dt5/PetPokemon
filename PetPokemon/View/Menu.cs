@@ -41,7 +41,7 @@ namespace PetPokemon.View
             Console.WriteLine($"Olá {username}, seja bem vindo ao centro virtual de adoção PetPokémon.");
         }
 
-        public static void ShowMenu()
+        public static void ShowAdoptionMenu()
         {
             Console.WriteLine();
             Console.WriteLine("===================== Menu de Adoção ====================");
@@ -83,31 +83,34 @@ namespace PetPokemon.View
                 {
                     Console.WriteLine("Habilidades: —");
                 }
-
-                Console.WriteLine();
-            }
-            else
-            {
-                Console.WriteLine("Pokémon não encontrado.");
             }
         }
 
-        public static int GetMenuChoice()
+        public static void ShowPokemonNotFoundError()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Pokémon não encontrado. Tente novamente!");
+        }
+
+        public static int GetMenuChoice(int minValue, int maxValue)
         {
             while (true)
             {
+                Console.WriteLine();
                 Console.Write("Escolha uma opção do menu: ");
                 string input = Console.ReadLine() ?? string.Empty;
-                if (int.TryParse(input, out int choice) && choice >= 0 && choice <= 3)
+                if (int.TryParse(input, out int choice) && choice >= minValue && choice <= maxValue)
                 {
                     return choice;
                 }
+                Console.WriteLine();
                 Console.WriteLine("Opção inválida. Tente novamente!");
             }
         }
 
         public static void ShowAdoptionPrompt(string pokemonName)
         {
+            Console.WriteLine();
             Console.WriteLine($"Você deseja adotar um {pokemonName}? (s/n)");
         }
 
@@ -123,23 +126,67 @@ namespace PetPokemon.View
                 {
                     return false;
                 }
+                Console.WriteLine();
                 Console.WriteLine("Opção inválida. Por favor, responda com 's' para sim ou 'n' para não.");
             }
         }
 
         public static void ConfirmAdoption(string username, string pokemonName)
         {
+            Console.WriteLine();
             Console.WriteLine($"Parabéns {username}! Você adotou um {pokemonName}!");
+        }
+
+        public static void ShowPetActionsMenu()
+        {
+            Console.WriteLine();
+            Console.WriteLine("===================== Menu de Ações ====================");
+            Console.WriteLine("1) Brincar");
+            Console.WriteLine("2) Alimentar");
+            Console.WriteLine("3) Dormir");
+            Console.WriteLine("4) Ver status do pet");
+            Console.WriteLine("0) Sair");
+        }
+
+        public static void ShowPlayActionMessage()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Você brincou com seu pet!");
+        }
+
+        public static void ShowFeedActionMessage()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Você alimentou seu pet!");
+        }
+
+        public static void ShowSleepActionMessage()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Seu pet dormiu bem!");
         }
 
         public static void FarewellUser(string username)
         {
+            Console.WriteLine();
             Console.WriteLine($"Obrigado por visitar o centro virtual de adoção PetPokémon, {username}! Até a próxima!");
         }
 
         public static void ShowApiError()
         {
+            Console.WriteLine();
             Console.WriteLine("Desculpe, não foi possível obter as informações do Pokémon no momento. Tente novamente mais tarde.");
+        }
+
+        public static void ShowPetStatus(Pet pet)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Status do seu pet:");
+            Console.WriteLine($"Humor: {((Humor)pet.Humor).ToString().ToLower()}");
+            Console.WriteLine($"Fome: {((Hunger)pet.Hunger).ToString().ToLower()}");
+            Console.WriteLine($"Energia: {((Energy)pet.Energy).ToString().ToLower()}");
+            Console.WriteLine($"Saúde: {((Health)pet.Health).ToString().ToLower()}");
+            Console.WriteLine($"Nível: {pet.Level}");
         }
     }
 }
