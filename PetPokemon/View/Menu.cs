@@ -182,10 +182,10 @@ namespace PetPokemon.View
         {
             Console.WriteLine();
             Console.WriteLine("Status do seu pet:");
-            Console.WriteLine($"Humor: {((Humor)pet.Humor).ToString().ToLower()}");
-            Console.WriteLine($"Fome: {((Hunger)pet.Hunger).ToString().ToLower()}");
-            Console.WriteLine($"Energia: {((Energy)pet.Energy).ToString().ToLower()}");
-            Console.WriteLine($"Saúde: {((Health)pet.Health).ToString().ToLower()}");
+            Console.WriteLine($"Humor: {((Humor)pet.Humor).GetDisplayName()}");
+            Console.WriteLine($"Fome: {((Hunger)pet.Hunger).GetDisplayName()}");
+            Console.WriteLine($"Energia: {((Energy)pet.Energy).GetDisplayName()}");
+            Console.WriteLine($"Saúde: {((Health)pet.Health).GetDisplayName()}");
             Console.WriteLine($"Nível: {pet.Level}");
         }
     }
