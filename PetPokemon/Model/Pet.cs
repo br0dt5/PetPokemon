@@ -4,11 +4,17 @@ namespace PetPokemon.Model
 {
     public class Pet
     {
+        // Pet attributes
+        public string? Name { get; init; }
+        public int Height { get; init; }
+        public int Weight { get; init; }
+        public int Level { get; private set; }
+        
+        // Pet status
         public int Humor { get; private set; }
         public int Hunger { get; private set; }
         public int Energy { get; private set; }
         public int Health { get; private set; }
-        public int Level { get; private set; }
 
         public Pet()
         {
@@ -18,6 +24,11 @@ namespace PetPokemon.Model
             Energy = random.Next(1, 6);
             Health = 5;
             Level = 1;
+        }
+
+        public void ShowAttributes()
+        {
+            Menu.ShowPetAttributes(this);
         }
 
         public void ShowStatus()

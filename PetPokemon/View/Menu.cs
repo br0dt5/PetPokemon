@@ -51,7 +51,7 @@ namespace PetPokemon.View
             Console.WriteLine("0) Sair");
         }
 
-        public static void ShowPokemonInfo(Pokemon pokemon)
+        public static void ShowPokemonInfo(PokemonInfo pokemon)
         {
             if (pokemon is not null)
             {
@@ -145,6 +145,7 @@ namespace PetPokemon.View
             Console.WriteLine("2) Alimentar");
             Console.WriteLine("3) Dormir");
             Console.WriteLine("4) Ver status do pet");
+            Console.WriteLine("5) Ver atributos do pet");
             Console.WriteLine("0) Sair");
         }
 
@@ -186,6 +187,15 @@ namespace PetPokemon.View
             Console.WriteLine($"Fome: {((Hunger)pet.Hunger).GetDisplayName()}");
             Console.WriteLine($"Energia: {((Energy)pet.Energy).GetDisplayName()}");
             Console.WriteLine($"Saúde: {((Health)pet.Health).GetDisplayName()}");
+        }
+
+        public static void ShowPetAttributes(Pet pet)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Atributos do seu pet:");
+            Console.WriteLine($"Nome: {pet.Name}");
+            Console.WriteLine($"Altura: {pet.Height}");
+            Console.WriteLine($"Peso: {pet.Weight}");
             Console.WriteLine($"Nível: {pet.Level}");
         }
     }

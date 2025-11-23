@@ -1,4 +1,6 @@
-﻿using PetPokemon.Model;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using PetPokemon.Model;
 using PetPokemon.View;
 using RestSharp;
 
@@ -8,7 +10,6 @@ namespace PetPokemon.Controller
     {
         private readonly RestClient _client;
         private const string BaseUrl = "https://pokeapi.co";
-        private bool _isAdopting = false;
         private bool _closeApp = false;
 
         public MainController()
@@ -29,23 +30,28 @@ namespace PetPokemon.Controller
 
             while (true)
             {
-                await HandleAdoptionMenu(username);
-
-                if (_isAdopting)
-                {
-                    var pet = StartAdoption();
-                    HandlePetActionsMenu(pet);
-                }
+                var pet = await HandleAdoptionMenu(username);
 
                 if (_closeApp)
                 {
                     Menu.FarewellUser(username);
                     break;
                 }
+
+                if (pet is not null)
+                {
+                    HandlePetActionsMenu(pet);
+
+                    if (_closeApp)
+                    {
+                        Menu.FarewellUser(username);
+                        break;
+                    }
+                }
             }
         }
 
-        async Task HandleAdoptionMenu(string username)
+        async Task<Pet?> HandleAdoptionMenu(string username)
         {
             while (true)
             {
@@ -55,7 +61,7 @@ namespace PetPokemon.Controller
                 if (opt == 0)
                 {
                     _closeApp = true;
-                    return;
+                    return null;
                 }
 
                 var id = MapChoiceToId(opt);
@@ -73,21 +79,27 @@ namespace PetPokemon.Controller
                 var confirmation = Menu.GetAdoptionConfirmation();
                 if (confirmation)
                 {
-                    _isAdopting = true;
                     Menu.ConfirmAdoption(username, pokemon.Name);
-                    return;
+
+                    var pet = StartAdoption(pokemon);
+                    return pet;
                 }
             }
         }
 
-        static Pet StartAdoption() => new Pet();
+        static Pet StartAdoption(PokemonInfo pokemon)
+        {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<PokemonInfo, Pet>(), new LoggerFactory());
+            var mapper = config.CreateMapper();
+            return mapper.Map<Pet>(pokemon);
+        }
 
         void HandlePetActionsMenu(Pet pet)
         {
             while (true)
             {
                 Menu.ShowPetActionsMenu();
-                var opt = Menu.GetMenuChoice(0, 4);
+                var opt = Menu.GetMenuChoice(0, 5);
 
                 if (opt == 0)
                 {
@@ -105,6 +117,8 @@ namespace PetPokemon.Controller
                         pet.Sleep(); break;
                     case 4:
                         pet.ShowStatus(); break;
+                    case 5:
+                        pet.ShowAttributes(); break;
                 }
             }
         }
@@ -124,12 +138,12 @@ namespace PetPokemon.Controller
             _ => -1
         };
 
-        async Task<Pokemon?> GetPokemonAsync(int id)
+        async Task<PokemonInfo?> GetPokemonAsync(int id)
         {
             try
             {
                 var request = new RestRequest($"/api/v2/pokemon/{id}/", Method.Get);
-                var pokemon = await _client.GetAsync<Pokemon>(request);
+                var pokemon = await _client.GetAsync<PokemonInfo>(request);
 
                 return pokemon;
             }
