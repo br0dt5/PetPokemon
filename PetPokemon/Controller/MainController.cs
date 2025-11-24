@@ -149,7 +149,7 @@ namespace PetPokemon.Controller
             }
             catch (Exception ex)
             {
-                Menu.ShowApiError();
+                Menu.ShowApiError(ex);
                 return null;
             }
         }

@@ -173,10 +173,11 @@ namespace PetPokemon.View
             Console.WriteLine($"Obrigado por visitar o centro virtual de adoção PetPokémon, {username}! Até a próxima!");
         }
 
-        public static void ShowApiError()
+        public static void ShowApiError(Exception ex)
         {
             Console.WriteLine();
             Console.WriteLine("Desculpe, não foi possível obter as informações do Pokémon no momento. Tente novamente mais tarde.");
+            Console.WriteLine($"Informações: {ex.Message}");
         }
 
         public static void ShowPetStatus(Pet pet)
